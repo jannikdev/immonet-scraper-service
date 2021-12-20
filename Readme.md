@@ -1,4 +1,4 @@
-Fork from [Daniel Waller's](https://github.com/d4l-w4r) [Immowelt Scraper Service ] (https://github.com/d4l-w4r/immonet-scraper-service).
+Fork from [Daniel Waller's](https://github.com/d4l-w4r) [Immowelt Scraper Service ](https://github.com/d4l-w4r/immonet-scraper-service).
 
 Adjusted for use in a research project.
 The goal is to scrape publicly available real estate data for statistical analysis.
