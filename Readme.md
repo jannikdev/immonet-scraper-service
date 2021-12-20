@@ -1,3 +1,8 @@
+Fork from [Daniel Waller's](https://github.com/d4l-w4r) [Immowelt Scraper Service ] (https://github.com/d4l-w4r/immonet-scraper-service).
+
+Adjusted for use in a research project.
+The goal is to scrape publicly available real estate data for statistical analysis.
+
 # Immowelt Scraper Service
 
 This node service scrapes all available entries for a given city from http://immowelt.de and stores them in a simple Json file store.
