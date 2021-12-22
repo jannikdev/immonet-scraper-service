@@ -1,3 +1,4 @@
 node_modules/
 storage/storage.json
 .idea
+package-lock.json
