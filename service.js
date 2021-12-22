@@ -10,7 +10,7 @@ const store = require('./storage/store');
 // configuration
 var app = express();
 var storeObj = new store.Store();
-var scrapeTarget = "Bremen";
+var scrapeTarget = "Bremen"; //Name of federal state in "normal" capitalization without mutated vowels (eg. "Thueringen")
 var scraperInstance = new scraper.ImmoweltScraper(scrapeTarget, storeObj);
 
 app.use(bodyParser.urlencoded({'extended':'true'}));
