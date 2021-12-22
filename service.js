@@ -10,7 +10,7 @@ const store = require('./storage/store');
 // configuration
 var app = express();
 var storeObj = new store.Store();
-var scrapeTarget = "Hamburg";
+var scrapeTarget = "Bremen";
 var scraperInstance = new scraper.ImmoweltScraper(scrapeTarget, storeObj);
 
 app.use(bodyParser.urlencoded({'extended':'true'}));
@@ -37,5 +37,5 @@ scraperInstance.start(isInitialScrape);
 if (!isInitialScrape) {
   setInterval(function() { scraperInstance.start(); }, (60 * 1000) * 10) // restart every 10 minutes
 }
-app.listen(1234);
-console.log("Scraper service running on http://localhost:1234");
+app.listen(8081);
+console.log("Scraper service running on http://localhost:8081");

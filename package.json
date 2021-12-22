@@ -1,14 +1,14 @@
 {
   "name": "immowelt-scrapper-service",
   "version": "0.0.1",
-  "description": "Microservice to scrape and serve Immowelt data by city",
+  "description": "Microservice to scrape and serve Immowelt data by state",
   "main": "service.js",
   "author": "Daniel Waller",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "fs": "0.0.1-security",
-    "immowelt-scraper": "^1.0.2",
+    "immowelt-scraper": "git://github.com/jannikdev/immowelt-scraper.git",
     "method-override": "^2.3.8",
     "time-stamp": "^1.0.1",
     "underscore": "^1.8.3"

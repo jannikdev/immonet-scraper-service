@@ -11,6 +11,6 @@ To make the scraped data available, the service exposes an API with 2 GET endpoi
 * `GET /api/entries` - All scraped entries
 * `GET /api/entry/{entryId}` - An entry by its Immonet ID
 
-By default this service starts its API on `localhost:1234`.
+By default this service starts its API on `localhost:8081`.
 
 Props to [Federico Bertolini](https://github.com/fedebertolini) for writing [immowelt-scraper](https://www.npmjs.com/package/immowelt-scraper) :)
