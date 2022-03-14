@@ -1,10 +1,12 @@
 const scraper = require('immowelt-scraper');
 const _ = require('underscore');
 const store = require('./storage/store');
+const fs = require('fs');
 
-module.exports.ImmoweltScraper = function(scrapeTarget, storage) {
+module.exports.ImmoweltScraper = function(scrapeTargets, storage) {
 
-  var state = scrapeTarget;
+  var states = scrapeTargets;
+  var currentState;
   var entryStore = storage;
   var maxPage = 10;
   var currentPage = 1;
@@ -12,35 +14,57 @@ module.exports.ImmoweltScraper = function(scrapeTarget, storage) {
   var initialScrape = false;
   var runningPromise = null;
 
-  this.start = function(isInitialScrape) {
+  this.start = function(isInitialScrape, appstate) {
     console.log("Starting to scrape Immowelt");
-    currentPage = 1;
-    maxPage = 10;
-    retryOnFail = true;
-    initialScrape = isInitialScrape;
-    scrapePage(currentPage);
+    if(appstate) {
+      console.log("resuming with appstate: ");
+      console.log(appstate);
+      if (appstate.maxPage - appstate.currentPage >= 2 || states.length > 0) {
+        currentPage = appstate.currentPage;
+        maxPage = appstate.maxPage;
+        states = appstate.states;
+        currentState = appstate.currentState;
+        retryOnFail = true;
+        initialScrape = isInitialScrape;
+        scrapePage(currentPage);
+      }
+    } else {
+      currentPage = 1;
+      maxPage = 10;
+      retryOnFail = true;
+      currentState = scrapeTargets.pop();
+      initialScrape = isInitialScrape;
+      scrapePage(currentPage);
+    }
+
   };
 
   var stop = function() {
     retryOnFail = false;
-    runningPromise = null
+    runningPromise = null;
     console.log("Scraping stopped");
-  }
+  };
 
   var onPromiseSuccess = function (result) {
     if (initialScrape) {
-      console.log(result)
       maxPage = result['pagination']['totalPages'];
       initialScrape = false;
     }
     var addedCount = entryStore.addEntries(result['items']);
-    console.log(currentPage)
-    console.log(maxPage)
-    console.log(addedCount)
     if (currentPage < maxPage && addedCount > 0) {
       ++currentPage;
-      console.log('increment')
-      var delay =  _.random(2, 15) * 1000;
+      saveAppState();
+      var delay =  _.random(0.5, 1.5) * 1000;
+      console.log("Delaying " + delay / 1000 + " seconds.");
+      _.delay(scrapePage, delay, currentPage);
+    } else if(states.length > 0 && addedCount > 0) {
+      currentState = states.pop();
+      console.log("New State: " + currentState);
+      console.log(states.length + " states left");
+      currentPage = 1;
+      initialScrape = true;
+      saveAppState();
+      var delay =  _.random(1, 2.5) * 1000;
       console.log("Delaying " + delay / 1000 + " seconds.");
       _.delay(scrapePage, delay, currentPage);
     } else {
@@ -58,10 +82,22 @@ module.exports.ImmoweltScraper = function(scrapeTarget, storage) {
   };
 
   var scrapePage = function(page) {
-    console.log("Scraping page " + page);
-    runningPromise = scraper.scrapeState(state, page).then(
+    console.log("Scraping page " + page + (page === 1 ? "" : (" of " + maxPage + " in " + currentState)));
+    runningPromise = scraper.scrapeState(currentState, page).then(
         function(result) { onPromiseSuccess(result); },
         function(reason) { onPromiseReject(reason); }
     );
   };
+
+  var saveAppState = function () {
+    let appstate = {};
+    appstate.currentPage = currentPage;
+    appstate.maxPage = maxPage;
+    appstate.states = states;
+    appstate.currentState = currentState;
+
+    let data = JSON.stringify(appstate);
+    fs.writeFileSync('storage/appstate.json', data);
+  };
+
 };
