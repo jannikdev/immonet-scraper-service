@@ -37,6 +37,10 @@ module.exports.Store = function() {
   }
 
   /*Public methods*/
+  this.deleteAll = function () {
+    initDB();
+  };
+
   this.getStorage = function() {
     return store;
   };
